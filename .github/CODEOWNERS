@@ -1,2 +1,5 @@
 # Set the organization owner as the code owner for all files in the repository
 * @M4rinz
+
+# JavaScript files
+/js/ @FabriDeCastelli
