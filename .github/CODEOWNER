@@ -1,2 +1,5 @@
 # Set the organization owner as the code owner for all files in the repository
 * @org-owner-M4rinz
+
+# Set Group 8 as the owner of the JS directory
+/js/ @group-8-kpi-calculation-engine
