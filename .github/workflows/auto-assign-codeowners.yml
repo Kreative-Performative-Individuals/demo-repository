@@ -1,15 +1,15 @@
-name: Auto Assign CODEOWNERS
+name: Auto Assign Code Owners
 
 on:
   pull_request:
-    types: [opened, synchronize]  # Trigger on new PRs and when PRs are updated
+    types: [opened, synchronize]  # Trigger when a PR is opened or updated
 
 jobs:
   auto_assign_codeowners:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write    # Required to assign users to pull requests
-      contents: read          # Required to read the CODEOWNERS file
+      pull-requests: write  # Required to assign users to PRs
+      contents: read        # Required to read the CODEOWNERS file
 
     steps:
       - name: Check out code
@@ -18,7 +18,6 @@ jobs:
       - name: Get changed files
         id: changed_files
         run: |
-          # List all files changed in the pull request
           echo "::set-output name=files::$(git diff --name-only origin/main HEAD)"
       
       - name: Find CODEOWNERS
@@ -26,7 +25,6 @@ jobs:
         run: |
           CODEOWNERS_FILE=".github/CODEOWNERS"
           if [[ -f "$CODEOWNERS_FILE" ]]; then
-            # Extract relevant CODEOWNERS entries based on changed files
             codeowners=""
             for file in ${{ steps.changed_files.outputs.files }}; do
               owners=$(grep -E "^$file" "$CODEOWNERS_FILE" | awk '{print $2}' | sort -u)
@@ -38,23 +36,9 @@ jobs:
             echo "::set-output name=codeowners::"
           fi
 
-      - name: Assign CODEOWNERS as reviewers and assignees
-        uses: actions/github-script@v6
+      - name: Auto-assign code owners
+        uses: pozil/auto-assign-issue@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const codeowners = "${{ steps.find_codeowners.outputs.codeowners }}".split(" ");
-            if (codeowners.length > 0) {
-              await github.rest.issues.addAssignees({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                assignees: codeowners
-              });
-              await github.rest.pulls.requestReviewers({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.issue.number,
-                reviewers: codeowners
-              });
-            }
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          assignees: ${{ steps.find_codeowners.outputs.codeowners }}
+          numOfAssignee: 1  # Number of assignees to assign
