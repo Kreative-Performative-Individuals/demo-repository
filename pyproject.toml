@@ -3,8 +3,8 @@ name = "my-ml-project"
 version = "0.1.0"
 description = "A machine learning project example using PyPoetry."
 authors = [
-    "Your Name <you@example.com>",
-    "Another Author <another@example.com>",
+    "Fabrizio De Castelli <me@gmail.com>",
+    "Andrea Marino <another@example.com>",
     "Third Author <third@example.com>"
 ]
 license = "MIT"
@@ -12,6 +12,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.10.10"
 requests = "^2.32.3"
+keras = "^3.6.0"
 
 
 [tool.poetry.dev-dependencies]
