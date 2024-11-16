@@ -6,7 +6,6 @@ on:
       - main
   pull_request:
   schedule:
-  # Suggested by ChatGPT. I have to think about this
     - cron: '0 0 * * 1'  # Runs every Monday at midnight UTC
 
 jobs:
