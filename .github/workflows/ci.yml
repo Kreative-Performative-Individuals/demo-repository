@@ -1,4 +1,4 @@
-yname: Python CI
+name: Python CI
 
 on: [push, pull_request]
 
