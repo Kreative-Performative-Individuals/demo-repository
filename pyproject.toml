@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "my-ml-project"
+version = "0.1.0"
+description = "A machine learning project example using PyPoetry."
+authors = [
+    "Fabrizio De Castelli <me@gmail.com>",
+    "Andrea Marino <another@example.com>",
+    "Third Author <third@example.com>"
+]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.10.10"
+requests = "^2.32.3"
+keras = "^3.6.0"
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1"          # Testing framework
+coverage = "^6.5"       # Coverage measurement
+black = "^22.3"         # Code formatter
+ruff = "^0.0.263"       # Linter
+mypy = "^0.971"         # Static type checker
+flake8 = "^4.0"         # PEP8 compliance checker
