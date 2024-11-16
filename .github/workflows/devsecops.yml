@@ -1,0 +1,81 @@
+name: Security Scan Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+  # Suggested by ChatGPT. I have to think about this
+    - cron: '0 0 * * 1'  # Runs every Monday at midnight UTC
+
+jobs:
+  # Trivy to do an overall security scan, including many stages of the DevSecOps pipeline
+  security-scan:
+    name: Secret Scanning & Software Component Analysis (SCA)
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the codebase
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Run Trivy in fs mode, create a report
+      - name: Generate Trivy Vulnerability Report
+        uses: aquasecurity/trivy-action@master  #trivy-action says 0.28.0
+        with:
+          scan-type: "fs"
+          output: 'trivy-report.json'
+          format: 'json'
+          scan-ref: '.'
+          exit-code: '0'
+          # Enable next line for ad-hoc analysis
+          #trivy-config: trivy.yaml  # I should create this file, in case
+      
+      # Upload the report
+      - name: Upload Vulnerability Scan Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report
+          path: trivy-report.json
+          retention-days: 30
+
+      # Run Trivy in fs mode, failing in case of High/Critical vulnerabilities
+      - name: Fail build on High/Criticial Vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          format: 'table'
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+          # On a subsequent call to the action we know Trivy is already installed so can skip this
+          skip-setup-trivy: true
+
+      # Infrastructure as Code (IaC) scanning
+      - name: Run Trivy vulnerability scanner in IaC mode
+        uses: aquasecurity/trivy-action@master  #trivy-action says 0.28.0
+        with:
+          scan-type: 'config'
+          hide-progress: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          exit-code: '1' # Fail if HIGH/CRITICAL vulnerabilities are found
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+          skip-setup-trivy: true
+
+      # Upload SARIF results for IaC scanning to GitHub Security tab
+      - name: Upload Trivy IaC scan results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+
+  # Bandit to do Static Application Security Test (SAST)?
+
+
+  # Trivy to do Container Scanning?
+
+
+  # OWASP ZAP to do Dynamic Application Security Test (DAST)?
