@@ -8,9 +8,14 @@ on:
   schedule:
     - cron: '0 0 * * 1'  # Runs every Monday at midnight UTC
 
+permissions:
+  contents: read
+
 jobs:
-  # Trivy to do an overall security scan, including many stages of the DevSecOps pipeline
-  security-scan:
+  # Trivy to do Secret Scanning and SCA
+  fs-scan:
+    permissions:
+      contents: read            # for actions/checkout to fetch code
     name: Secret Scanning & Software Component Analysis (SCA)
     runs-on: ubuntu-latest
     steps:
@@ -51,24 +56,37 @@ jobs:
           # On a subsequent call to the action we know Trivy is already installed so can skip this
           skip-setup-trivy: true
 
-      # Infrastructure as Code (IaC) scanning
-      - name: Run Trivy vulnerability scanner in IaC mode
-        uses: aquasecurity/trivy-action@master  #trivy-action says 0.28.0
-        with:
-          scan-type: 'config'
-          hide-progress: true
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          exit-code: '1' # Fail if HIGH/CRITICAL vulnerabilities are found
-          ignore-unfixed: true
-          severity: 'CRITICAL,HIGH'
-          skip-setup-trivy: true
+    # Trivy to do Infrastructure as Code (IaC) scanning
+    iac-scan:
+      permissions:
+        contents: read            # for actions/checkout to fetch code
+        security-events: write    # for github/codeql-action/upload-sarif to upload SARIF results
+        actions: read             # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+      name: Infrastructure as Code (IaC) Analysis
+      runs-on: ubuntu-latest
+      steps:
+        # Checkout the codebase
+        - name: Checkout code
+          uses: actions/checkout@v4       
 
-      # Upload SARIF results for IaC scanning to GitHub Security tab
-      - name: Upload Trivy IaC scan results
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results.sarif'
+        
+        - name: Run Trivy vulnerability scanner in IaC mode
+          uses: aquasecurity/trivy-action@master  #trivy-action says 0.28.0
+          with:
+            scan-type: 'config'
+            hide-progress: true
+            format: 'sarif'
+            output: 'trivy-results.sarif'
+            exit-code: '1' # Fail if HIGH/CRITICAL vulnerabilities are found
+            ignore-unfixed: true
+            severity: 'CRITICAL,HIGH'
+            skip-setup-trivy: true
+
+        # Upload SARIF results for IaC scanning to GitHub Security tab
+        - name: Upload Trivy IaC scan results
+          uses: github/codeql-action/upload-sarif@v3
+          with:
+            sarif_file: 'trivy-results.sarif'
 
 
   # Bandit to do Static Application Security Test (SAST)?
