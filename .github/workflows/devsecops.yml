@@ -80,7 +80,6 @@ jobs:
           exit-code: '1' # Fail if HIGH/CRITICAL vulnerabilities are found
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
-          skip-setup-trivy: true
 
       # Upload SARIF results for IaC scanning to GitHub Security tab
       - name: Upload Trivy IaC scan results
