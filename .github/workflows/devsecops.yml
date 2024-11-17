@@ -25,11 +25,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Set a dynamic file name for the report
+      - name: Set JSON report file name
+        run: echo "REPORT_NAME=trivy-report-$(date +'%Y%m%d-%H%M%S').json" >> $GITHUB_ENV
+
       # Run Trivy in fs mode, create a JSON report
       - name: Run Trivy in fs mode, generate JSON vulnerability report
-        run: |
-          export REPORT_NAME="trivy-report-$(date +'%Y%m%d-%H%M%S').json"
-          echo "REPORT_NAME=$REPORT_NAME" >> $GITHUB_ENV
         uses: aquasecurity/trivy-action@master  #trivy-action says 0.28.0
         with:
           scan-type: "fs"
