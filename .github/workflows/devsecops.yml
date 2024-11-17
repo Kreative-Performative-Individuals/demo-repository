@@ -119,9 +119,6 @@ jobs:
           bandit -r . -f json -o ${{ env.BANDIT_REPORT_NAME }} --severity-level high
           bandit -r . -f sarif -o bandit-sarif-report.sarif
         continue-on-error: true
-          
-      #- name: RUn Bandit Sarif
-      #  run: bandit -r . -f sarif -o bandit-sarif-report.sarif
 
       ## Check the JSON report for high-severity vulnerabilities, exit if it's found
       #- name: Check for vulnerabilities (Bandit)
