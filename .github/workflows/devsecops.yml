@@ -115,7 +115,9 @@ jobs:
 
       # Run Bandit to do SAST, generate JSON and SARIF reports
       - name: Run Bandit, generate reports
-        run: bandit -r . -f json -o bandit-json-report.json --severity-level high
+        run: |
+          bandit -r . -f json -o bandit-json-report.json --severity-level high
+          bandit -r . -f sarif -o bandit-sarif-report.sarif
         continue-on-error: true
           
       #- name: RUn Bandit Sarif
@@ -137,7 +139,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bandit-json-report
-          path: bandit-json-report-json
+          path: bandit-json-report.json
           retention-days: 30
 
       ## Upload Bandit SARIF results to GitHub Security tab
