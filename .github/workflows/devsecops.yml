@@ -55,8 +55,8 @@ jobs:
           scan-ref: '.'
           hide-progress: true
           exit-code: '0'
-          ## On a subsequent call to the action we know Trivy is already installed so can skip this
-          #skip-setup-trivy: true
+          # On a subsequent call to the action we know Trivy is already installed so can skip this
+          skip-setup-trivy: true
           # Enable next line for ad-hoc analysis
           #trivy-config: trivy.yaml  # I should create this file, in case
 
@@ -76,7 +76,7 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: '1'
-          #skip-setup-trivy: true
+          skip-setup-trivy: true
 
   # Trivy to do Infrastructure as Code (IaC) scanning
   iac-scan:
