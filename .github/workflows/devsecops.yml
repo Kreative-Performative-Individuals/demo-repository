@@ -90,7 +90,7 @@ jobs:
         uses: actions/checkout@v4       
 
       # Run Trivy in config mode, create sarif report
-      - name: Run Trivy in IaC mode, fail build on high/criticial vulnerabilities
+      - name: Run Trivy in config mode to do IaC Analysis, fail build on high/criticial vulnerabilities
         uses: aquasecurity/trivy-action@master  #trivy-action says 0.28.0
         with:
           scan-type: 'config'
