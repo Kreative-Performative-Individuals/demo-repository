@@ -116,7 +116,7 @@ jobs:
       # Run Bandit to do SAST, generate JSON and SARIF reports
       - name: Run Bandit, generate reports
         run: |
-          bandit -r . -f json -o bandit-json-report.json --severity-level high
+          bandit -r . -f json -o ${{ env.BANDIT_REPORT_NAME }} --severity-level high
           bandit -r . -f sarif -o bandit-sarif-report.sarif
         continue-on-error: true
           
@@ -139,16 +139,16 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bandit-json-report
-          path: bandit-json-report.json
+          path: ${{ env.BANDIT_REPORT_NAME }}
           retention-days: 30
 
-      ## Upload Bandit SARIF results to GitHub Security tab
-      #- name: Upload vulnerability scan results (sarif)
-      #  uses: github/codeql-action/upload-sarif@v3
-      #  # Upload SARIF results to GitHub Code scanning even upon a non zero exit code from Trivy Scan
-      #  if: always()
-      #  with:
-      #    sarif_file: 'bandit-sarif-report.sarif'
+      # Upload Bandit SARIF results to GitHub Security tab
+      - name: Upload vulnerability scan results (sarif)
+        uses: github/codeql-action/upload-sarif@v3
+        # Upload SARIF results to GitHub Code scanning even upon a non zero exit code from Trivy Scan
+        if: always()
+        with:
+          sarif_file: 'bandit-sarif-report.sarif'
 
 
   # Trivy to do Infrastructure as Code (IaC) scanning
