@@ -115,7 +115,7 @@ jobs:
 
       # Run Bandit to do SAST, generate JSON and SARIF reports
       - name: Run Bandit, generate reports
-        run: bandit -r . -f json -o "${{ env.BANDIT_REPORT_NAME }}" --severity-level high
+        run: bandit -r . -f json -o ${{ env.BANDIT_REPORT_NAME }} --severity-level high
 
       - name: Run Bandit, generate SARIF
         run: bandit -r . -f sarif -o bandit-sarif-report.sarif
@@ -124,7 +124,7 @@ jobs:
       - name: Check for vulnerabilities (Bandit)
         run: | 
           cat "${{ env.BANDIT_REPORT_NAME }}"
-          if grep -q '"severity": "HIGH"' "${{ env.BANDIT_REPORT_NAME }}"; then
+          if grep -q '"severity": "HIGH"' ${{ env.BANDIT_REPORT_NAME }}; then
             echo "High severity vulnerabilities found!"
             exit 1
           else
