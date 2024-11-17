@@ -133,7 +133,7 @@ jobs:
       # Upload Bandit SARIF results to GitHub Security tab
       - name: Upload vulnerability results (SARIF)
         uses: github/codeql-action/upload-sarif@v3
-        # Upload SARIF results to GitHub Code scanning even upon a non zero exit code from Trivy Scan
+        # Upload SARIF results to GitHub Code scanning even upon a non zero exit code
         if: always()
         with:
           sarif_file: 'bandit-sarif-report.sarif'
