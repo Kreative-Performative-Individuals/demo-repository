@@ -115,16 +115,16 @@ jobs:
 
       # Run Bandit to do SAST, generate JSON and SARIF reports
       - name: Run Bandit, generate reports
-        run: bandit -r . -f json -o bandit-report.json --severity-level high
+        run: bandit -r . -f json -o bandit-json-report.json --severity-level high
 
-      - name: Run Bandit, generate SARIF
-        run: bandit -r . -f sarif -o bandit-sarif-report.sarif
+      #- name: Run Bandit, generate SARIF
+      #  run: bandit -r . -f sarif -o bandit-sarif-report.sarif
 
       # Check the JSON report for high-severity vulnerabilities, exit if it's found
       - name: Check for vulnerabilities (Bandit)
         run: | 
-          cat ${{ env.BANDIT_REPORT_NAME }}
-          if grep -q '"severity": "HIGH"' ${{ env.BANDIT_REPORT_NAME }}; then
+          cat bandit-json-report.json
+          if grep -q '"severity": "HIGH"' bandit-json-report.json; then
             echo "High severity vulnerabilities found!"
             exit 1
           else
@@ -136,16 +136,16 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bandit-json-report
-          path: ${{ env.BANDIT_REPORT_NAME }}
+          path: bandit-json-report.json
           retention-days: 30
 
-      # Upload Bandit SARIF results to GitHub Security tab
-      - name: Upload vulnerability scan results (sarif)
-        uses: github/codeql-action/upload-sarif@v3
-        # Upload SARIF results to GitHub Code scanning even upon a non zero exit code from Trivy Scan
-        if: always()
-        with:
-          sarif_file: 'bandit-sarif-report.sarif'
+      ## Upload Bandit SARIF results to GitHub Security tab
+      #- name: Upload vulnerability scan results (sarif)
+      #  uses: github/codeql-action/upload-sarif@v3
+      #  # Upload SARIF results to GitHub Code scanning even upon a non zero exit code from Trivy Scan
+      #  if: always()
+      #  with:
+      #    sarif_file: 'bandit-sarif-report.sarif'
 
 
   # Trivy to do Infrastructure as Code (IaC) scanning
