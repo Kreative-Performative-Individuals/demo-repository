@@ -27,7 +27,7 @@ jobs:
 
       # Set a dynamic file name for the report
       - name: Set Trivy JSON report file name
-        run: echo "TRIVY_REPORT_NAME=trivy-fs-report-$(date +'%Y-%m-%d_%H-%M').json" >> $GITHUB_ENV
+        run: echo "TRIVY_REPORT_NAME=trivy-fs-report_$(date +'%Y-%m-%d_%H-%M').json" >> $GITHUB_ENV
 
       # Run Trivy in fs mode, create a JSON report
       - name: Run Trivy in fs mode, generate JSON vulnerability report
@@ -111,13 +111,14 @@ jobs:
 
       # Set a dynamic file name for the JSON report
       - name: Set Bandit JSON report file name
-        run: echo "BANDIT_REPORT_NAME=bandit-report-$(date +'%Y-%m-%d_%H-%M').json" >> $GITHUB_ENV
+        run: echo "BANDIT_REPORT_NAME=bandit-report_$(date +'%Y-%m-%d_%H-%M').json" >> $GITHUB_ENV
 
       # Run Bandit to do SAST, generate JSON and SARIF reports
       - name: Run Bandit, generate reports
-        run: | 
-          bandit -r . -f json -o "${{ env.BANDIT_REPORT_NAME }}" --severity-level high
-          bandit -r . -f sarif -o bandit-sarif-report.sarif
+        run: bandit -r . -f json -o "${{ env.BANDIT_REPORT_NAME }}" --severity-level high
+
+      - name: Run Bandit, generate SARIF
+        run: bandit -r . -f sarif -o bandit-sarif-report.sarif
 
       # Check the JSON report for high-severity vulnerabilities, exit if it's found
       - name: Check for vulnerabilities (Bandit)
