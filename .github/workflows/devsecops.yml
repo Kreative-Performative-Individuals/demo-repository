@@ -27,7 +27,7 @@ jobs:
 
       # Set a dynamic file name for the report
       - name: Set JSON report file name
-        run: echo "REPORT_NAME=trivy-fs-report-$(date +'%Y_%m_%d-%H:%M').json" >> $GITHUB_ENV
+        run: echo "REPORT_NAME=trivy-fs-report-$(date +'%Y-%m-%d_%H-%M').json" >> $GITHUB_ENV
 
       # Run Trivy in fs mode, create a JSON report
       - name: Run Trivy in fs mode, generate JSON vulnerability report
