@@ -115,22 +115,12 @@ jobs:
 
       # Run Bandit to do SAST, generate JSON and SARIF reports
       - name: Run Bandit, generate reports
+        # `set +e` allows the script to continue even if Bandit fails, so that both reports are generated
         run: |
           set +e
           bandit -r . -f json -o ${{ env.BANDIT_REPORT_NAME }}
           bandit -r . -f sarif -o bandit-sarif-report.sarif
         continue-on-error: true
-
-      ## Check the JSON report for high-severity vulnerabilities, exit if it's found
-      #- name: Check for vulnerabilities (Bandit)
-      #  run: | 
-      #    cat ${{ env.BANDIT_REPORT_NAME }}
-      #    if grep -q '"severity": "HIGH"' ${{ env.BANDIT_REPORT_NAME }}; then
-      #      echo "High severity vulnerabilities found!"
-      #      exit 1
-      #    else
-      #      echo "No high severity vulnerabilities found."
-      #    fi
 
       # Upload the Bandit JSON report
       - name: Upload Bandit results (JSON)
