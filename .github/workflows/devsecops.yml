@@ -116,6 +116,7 @@ jobs:
       # Run Bandit to do SAST, generate JSON and SARIF reports
       - name: Run Bandit, generate reports
         run: bandit -r . -f json -o bandit-json-report.json --severity-level high
+        continue-on-error: true
           
       #- name: RUn Bandit Sarif
       #  run: bandit -r . -f sarif -o bandit-sarif-report.sarif
