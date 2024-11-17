@@ -27,10 +27,13 @@ jobs:
 
       # Run Trivy in fs mode, create a JSON report
       - name: Run Trivy in fs mode, generate JSON vulnerability report
+        run: |
+          export REPORT_NAME="trivy-report-$(date +'%Y%m%d-%H%M%S').json"
+          echo "REPORT_NAME=$REPORT_NAME" >> $GITHUB_ENV
         uses: aquasecurity/trivy-action@master  #trivy-action says 0.28.0
         with:
           scan-type: "fs"
-          output: 'trivy-fs_json-report.json'
+          output: '${{ env.REPORT_NAME }}'
           format: 'json'
           scan-ref: '.'
           exit-code: '0'
@@ -42,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: trivy-fs_json-report
-          path: trivy-fs_json-report.json
+          path: ${{ env.REPORT_NAME }}.json
           retention-days: 30
 
       # Run Trivy in fs mode, create a SARIF report
