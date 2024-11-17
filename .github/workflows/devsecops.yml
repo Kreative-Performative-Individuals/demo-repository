@@ -115,28 +115,27 @@ jobs:
 
       # Run Bandit to do SAST, generate JSON and SARIF reports
       - name: Run Bandit, generate reports
-        run: bandit -r . -f json -o bandit-json-report.json --severity-level high
-
-      #- name: Run Bandit, generate SARIF
-      #  run: bandit -r . -f sarif -o bandit-sarif-report.sarif
-
-      # Check the JSON report for high-severity vulnerabilities, exit if it's found
-      - name: Check for vulnerabilities (Bandit)
         run: | 
-          cat bandit-json-report.json
-          if grep -q '"severity": "HIGH"' bandit-json-report.json; then
-            echo "High severity vulnerabilities found!"
-            exit 1
-          else
-            echo "No high severity vulnerabilities found."
-          fi
+          bandit -r . -f json -o ${{ env.BANDIT_REPORT_NAME }} --severity-level high
+          bandit -r . -f sarif -o bandit-sarif-report.sarif
+
+      ## Check the JSON report for high-severity vulnerabilities, exit if it's found
+      #- name: Check for vulnerabilities (Bandit)
+      #  run: | 
+      #    cat ${{ env.BANDIT_REPORT_NAME }}
+      #    if grep -q '"severity": "HIGH"' ${{ env.BANDIT_REPORT_NAME }}; then
+      #      echo "High severity vulnerabilities found!"
+      #      exit 1
+      #    else
+      #      echo "No high severity vulnerabilities found."
+      #    fi
 
       # Upload the Bandit JSON report
       - name: Upload Bandit scan results (JSON)
         uses: actions/upload-artifact@v4
         with:
           name: bandit-json-report
-          path: bandit-json-report.json
+          path: ${{ env.BANDIT_REPORT_NAME }}
           retention-days: 30
 
       ## Upload Bandit SARIF results to GitHub Security tab
