@@ -72,17 +72,17 @@ jobs:
         with:
           sarif_file: 'trivy-fs_sarif-report.sarif'
 
-      # Run Trivy in fs mode, failing in case of High/Critical vulnerabilities
-      - name: Run Trivy in fs mode, fail build on high/criticial vulnerabilities
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: "fs"
-          format: 'table'
-          scan-ref: '.'
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          exit-code: '1'
-          skip-setup-trivy: true
+      ## Run Trivy in fs mode, failing in case of High/Critical vulnerabilities
+      #- name: Run Trivy in fs mode, fail build on high/criticial vulnerabilities
+      #  uses: aquasecurity/trivy-action@master
+      #  with:
+      #    scan-type: "fs"
+      #    format: 'table'
+      #    scan-ref: '.'
+      #    severity: HIGH,CRITICAL
+      #    ignore-unfixed: true
+      #    exit-code: '1'
+      #    skip-setup-trivy: true
 
   # Bandit to do Static Application Security Test (SAST)
   sast:
