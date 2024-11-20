@@ -1,3 +1,0 @@
-# Dependencies with known vulnerabilities
-requests==2.19.1  # Contains security vulnerabilities
-flask==0.12  # Old version with known issues
