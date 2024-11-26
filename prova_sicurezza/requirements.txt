@@ -1,0 +1,18 @@
+# requirements.txt
+# This file contains outdated dependencies intentionally for testing purposes.
+
+# Why Trivy flags this:
+# - Trivy performs Software Composition Analysis (SCA) by checking dependencies
+#   against vulnerability databases like the NVD or GitHub Advisory Database.
+# - The following outdated dependencies have known vulnerabilities:
+#   - requests==2.19.1: Vulnerable to CVE-2018-18074 (open redirect issue).
+#   - flask==0.12: Vulnerable to CVE-2018-1000656 (crafted JSON attacks).
+
+# Why Bandit does not flag this:
+# - Bandit performs static code analysis and does not analyze dependency files 
+#   like requirements.txt. It focuses only on Python source code for issues like 
+#   insecure API usage or hardcoded secrets.
+
+# Vulnerable dependencies:
+requests==2.19.1  # Known vulnerabilities (e.g., CVE-2018-18074)
+flask==0.12       # Known vulnerabilities (e.g., CVE-2018-1000656)
